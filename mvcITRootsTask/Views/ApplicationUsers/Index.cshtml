@@ -1,0 +1,94 @@
+﻿@model IEnumerable<mvcITRootsTask.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@if (User.IsInRole("admin"))
+{
+<p>
+    @Ajax.ActionLink("Create User", "Create", "ApplicationUsers", null,
+    new AjaxOptions() { UpdateTargetId = "userdiv", InsertionMode = InsertionMode.Replace })
+    <br/><br/>
+    @Html.ActionLink("Download", "DownloadPDF")
+    @*@Html.ActionLink("Create New", "Create")*@
+</p>
+}
+
+@using(Html.BeginForm("index","ApplicationUsers",FormMethod.Get))
+{
+    @Html.TextBox("searching")
+        <br/><br/>
+    <input type="submit" value="search"/>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th></th>
+    </tr>
+    @if(Model.Count()==0)
+    {
+        <tr>
+            <td colspan="4">
+                NO DOCUMENT IS MATCHED
+            </td>
+        </tr>
+    }
+    else
+    {
+
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            @if (User.IsInRole("admin"))
+            {
+        <td>
+            @Ajax.ActionLink("Edit", "Edit", "ApplicationUsers", new { id = item.Id },
+                new AjaxOptions() { UpdateTargetId = "userdiv", InsertionMode = InsertionMode.Replace })
+            @*@Html.ActionLink("Edit", "Edit", new { id = item.Id })*@ |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>
+            }
+        </tr>
+    }
+    }
+</table>
+<div id="userdiv">
+
+
+
+</div>
+
+@section Scripts{
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+}
